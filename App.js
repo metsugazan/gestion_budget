@@ -7,7 +7,7 @@ import TabNavigation from './navigation/TabNavigation';
 export default function App() {
   return (
     <SafeAreaProvider>
-      <StatusBar backgroundColor="#191970" barStyle="auto" />
+      <StatusBar backgroundColor="#2B6747" barStyle="auto" />
       <TabNavigation />
     </SafeAreaProvider>
   );

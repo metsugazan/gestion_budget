@@ -22,13 +22,13 @@ const TabNavigation = () => {
     return (
         <NavigationContainer>
             <Tab.Navigator screenOptions={({ route }) => ({
-                        tabBarStyle: { backgroundColor: '#191970', paddingBottom: 5 },
+                        tabBarStyle: { backgroundColor: '#222222', paddingBottom: 5 },
                         tabBarLabelStyle: {
                           fontSize: 10,
                           fontWeight: 'bold',
                         },
-                        tabBarActiveTintColor: '#f96531',
-                        tabBarInactiveTintColor: 'white',
+                        tabBarActiveTintColor: '#9F8236',
+                        tabBarInactiveTintColor: '#adabab',
                         headerTitleAlign: 'center',
                         tabBarIcon: ({ focused, color, size }) => {
                           let iconName;
@@ -42,7 +42,7 @@ const TabNavigation = () => {
                             iconName = Platform.OS === 'ios' ? `chart-timeline-variant${focused ? '' : 'chart-timeline-variant'}` : 'chart-timeline-variant';
                           }
                 
-                          return <Icon name={iconName} size={size} color={focused ? '#f96531' : 'white'} style={{ marginTop: 5 }} />
+                          return <Icon name={iconName} size={size} color={focused ? '#9F8236' : '#adabab'} style={{ marginTop: 5 }} />
                 
                 
                         }
