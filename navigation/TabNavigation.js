@@ -7,6 +7,7 @@ import AccountScreen from '../screens/AccountScreen';
 import StatsScreen from '../screens/StatsScreen';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import StackNavigation from './StackNavigation';
 
 
 const Tab = createBottomTabNavigator();
@@ -46,7 +47,7 @@ const TabNavigation = () => {
                 
                         }
             })}>
-                <Tab.Screen name="Accueil" component={HomeScreen} />
+                <Tab.Screen name="Accueil" options={{ headerShown: false }}  component={StackNavigation} />
                 <Tab.Screen name="Account" options={{title: 'Compte'}} component={AccountScreen} />
                 <Tab.Screen name="Statistiques" component={StatsScreen} />
             </Tab.Navigator>
