@@ -48,8 +48,8 @@ const TabNavigation = () => {
                         }
             })}>
                 <Tab.Screen name="Accueil" options={{ headerShown: false }}  component={StackNavigation} />
-                <Tab.Screen name="Account" options={{title: 'Compte'}} component={AccountScreen} />
-                <Tab.Screen name="Statistiques" component={StatsScreen} />
+                <Tab.Screen name="Account" options={{title: 'Compte', headerShown: false}} component={AccountScreen} />
+                <Tab.Screen name="Statistiques" options={{ headerShown: false }} component={StatsScreen} />
             </Tab.Navigator>
         </NavigationContainer>
     );
