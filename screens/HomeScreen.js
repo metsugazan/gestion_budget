@@ -1,12 +1,12 @@
 
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import PickerComponent from '../components/PickerComponent';
 import GlobalContext from '../components/GlobalContext';
-import { useFocusEffect } from '@react-navigation/native'
 
 import data from '../assets/src/data.json'
 
@@ -15,66 +15,76 @@ const HomeScreen = ({ navigation }) => {
     const contextValue = useContext(GlobalContext)
     const [user, setUser] = useState(contextValue.user);
     const [userData, setUserData] = useState(data[contextValue.index])
-
-
-    useFocusEffect(() => {
+    useEffect(() => {
         setUser(contextValue.user)
         setUserData(data[contextValue.index])
     })
+    /*for(var i = 0; i < userData.expenses.length; i++){
+        var obj = userData.expenses[i];
+        for(var prop in obj){
+            if(obj.hasOwnProperty(prop) && obj[prop] !== null && !isNaN(obj[prop])){
+                obj[prop] = +obj[prop];   
+            }
+        }
+    }
+    console.log(JSON.stringify(userData.expenses, null, 2));*/
 
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
-                <View style={styles.dropDownStyle}>
-                    <Picker
-                        selectedValue={user}
-                        onValueChange={(text, index) => {
-                            contextValue.user = text
-                            contextValue.index = index - 1
-                            setUser(text)
-                            setUserData(data[index - 1])
-                        }}
-                        mode="dropdown"
-                    >
-                        <Picker.Item label="Choisissez un utilisateur" value=" " />
-                        {data.map((item, index) => <Picker.Item key={index} label={item.user} value={item.user} />)}
-                    </Picker>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.dropDownStyle}>
+                        <Picker
+                            selectedValue={user}
+                            onValueChange={(text, index) => {
+                                contextValue.user = text
+                                contextValue.index = index - 1
+                                setUser(text)
+                                setUserData(data[index - 1])
+                            }}
+                            mode="dropdown"
+                        >
+                            <Picker.Item label="Choisissez un utilisateur" value=" " />
+                            {data.map((item, index) => <Picker.Item key={index} label={item.user} value={item.user} />)}
+                        </Picker>
+                    </View>
+                    {(user === "") && setUser == "Maynklin"}
+                    <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
+                        <Text style={styles.txtSolde}>{user}</Text>
+                        {userData.expenses.slice(0, 1).map((item, index) =><Text style={styles.txtSolde} key={index}>Solde : {item.amount} € <Entypo name="wallet" size={24} /></Text>)}
+                    </View>
                 </View>
-                {(user === "") && setUser == "Maynklin"}
-                <Text style={styles.txtSolde} value={user}>{user}</Text>
-                <Text style={styles.txtSolde}>Solde : Pauvre</Text>
-
             </View>
             <Text style={styles.txtSolde}>Dernières transactions</Text>
 
             <View style={styles.boxTransac}>
                 <Text style={styles.txtTitleCol}>Débit</Text>
                 <ScrollView>
-                {userData.expenses.map((item, index) =>
-                    <View style={styles.line} key={index}>
-                        <View style={styles.lineLeft}>
-                            <Text style={styles.titleLine} >{item.category}</Text>
-                            <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{item.date}</Text>
+                    {userData.expenses.slice(0, 3).map((item, index) =>
+                        <View style={styles.line} key={index}>
+                            <View style={styles.lineLeft}>
+                                <Text style={styles.titleLine} >{item.category}</Text>
+                                <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{item.date}</Text>
+                            </View>
+                            <View style={styles.lineRight}>
+                                <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >- {item.amount} €</Text>
+                            </View>
                         </View>
-                        <View style={styles.lineRight}>
-                            <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >- {item.amount} €</Text>
-                        </View>
-                    </View>
-                )}
-</ScrollView>
+                    )}
+                </ScrollView>
                 <Text style={styles.txtTitleCol}>Crédit</Text>
                 <ScrollView>
-                {userData.incomes.map((item, index) =>
-                    <View style={styles.line}>
-                        <View style={styles.lineLeft}>
-                            <Text style={styles.titleLine} >{item.category}</Text>
-                            <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{item.date}</Text>
+                    {userData.incomes.slice(0, 3).map((item, index) =>
+                        <View style={styles.line}>
+                            <View style={styles.lineLeft}>
+                                <Text style={styles.titleLine} >{item.category}</Text>
+                                <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{item.date}</Text>
+                            </View>
+                            <View style={styles.lineRight}>
+                                <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >{item.amount} €</Text>
+                            </View>
                         </View>
-                        <View style={styles.lineRight}>
-                            <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >{item.amount} €</Text>
-                        </View>
-                    </View>
-                )}
+                    )}
                 </ScrollView>
             </View>
 
@@ -84,13 +94,13 @@ const HomeScreen = ({ navigation }) => {
             <View style={{ flex: 0.45, flexDirection: 'row' }}>
                 <View style={styles.containerBtn}>
                     <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Revenus')}>
-                        <Icon name="plus-circle" style={{ color: '#9F8236' }} size={46} />
+                        <MaterialCommunityIcons name="plus-circle" style={{ color: '#9F8236' }} size={46} />
                         <Text style={{ color: '#adabab', fontWeight: 'bold' }}>Ajout revenus</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.containerBtn}>
                     <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Depenses')}>
-                        <Icon name="plus-circle" style={{ color: '#9F8236' }} size={46} />
+                        <MaterialCommunityIcons name="plus-circle" style={{ color: '#9F8236' }} size={46} />
                         <Text style={{ color: '#adabab', fontWeight: 'bold' }}>Ajout dépenses</Text>
                     </TouchableOpacity>
                 </View>
@@ -113,7 +123,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#2B6747',
-        marginBottom: 15
+        marginBottom: 15,
     },
     boxTransac: {
         flex: 3,
@@ -168,14 +178,16 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     dropDownStyle: {
-        width: '80%',
+        width: '50%',
+        flex: 0.85,
         borderColor: '#838383',
         paddingHorizontal: 5,
         backgroundColor: '#adabab',
         borderRadius: 10,
         color: '#838383',
-        height: 45,
+        height: 35,
         textAlign: 'center',
+        justifyContent: 'center',
         shadowColor: 'black',
         shadowOffset: {
             width: 0,

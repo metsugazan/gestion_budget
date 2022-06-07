@@ -1,20 +1,66 @@
-import React from 'react'
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
-import { VictoryPie, VictoryChart, VictoryTheme } from 'victory-native';
+import { VictoryPie, VictoryTheme } from 'victory-native';
+import GlobalContext from '../components/GlobalContext';
+import data from '../assets/src/data.json'
 
 const StatsScreen = () => {
+const result = (data) => data.user
+console.log(result)
+const contextValue = useContext(GlobalContext)
+const [user, setUser] = useState(contextValue.user);
+const [userData, setUserData] = useState(data[contextValue.index])
 
-    const data = [
-        { x: "Transports", y: 35 },
-        { x: "Logement", y: 40 },
-        { x: "Divertissement", y: 55 }
-      ];
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
+            <Text style={styles.txtSolde}>Statistiques</Text>
       </View>
-      <VictoryPie width={350} theme={VictoryTheme.material} data={data}/>
+      <Text style={styles.txtSolde}>Dépenses par utilisateur</Text>
+      <View style={styles.boxPie}>
+      <VictoryPie width={400}
+       colorScale={["tomato", "orange", "#adabab", "cyan", "navy","#2B6747", "gold", "#222222", "#d62828", "#bb3e03"]}
+       style={{labels: {fontSize: 16, fontWeight: 'bold', fill:'white'}}} x={result} y={(data) => data.user} data={data}/>
+      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginHorizontal: 25, marginVertical: 10 }}>
+                    <View style={{ flex: 1, backgroundColor:'tomato', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', textAlign:'center'}}>Mayer Franklin</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor:'orange', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Ross Hess</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor:'#adabab', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Ingram Witt</Text>
+                    </View>
+                </View>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginHorizontal: 25, marginVertical: 10 }}>
+                    <View style={{ flex: 1, backgroundColor:'cyan', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'black', fontSize:16, fontWeight:'bold',  height: 40, textAlign:'center'}}>Mccormick Harrison</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor:'navy', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Garcia Brown</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor:'#2B6747', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Ramsey Le</Text>
+                    </View>
+                </View>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginHorizontal: 25, marginVertical: 10 }}>
+                    <View style={{ flex: 1, backgroundColor:'gold', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'black', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Witt Tyler</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor:'#222222', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Diana Leon</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor:'#d62828', borderRadius: 5, marginHorizontal: 5 }}>
+                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 42, textAlign:'center'}}>Millie Mcknight</Text>
+                    </View>
+                </View>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginHorizontal: 25,width:'43%', marginVertical: 10 }}>
+                    <View style={{ flex: 1, backgroundColor:'#bb3e03', borderRadius: 5,width:'50%', marginHorizontal: 5 }}>
+                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Daugherty Middleton</Text>
+                    </View>
+                </View>
+      </View>
       </View>
     )
 
@@ -30,15 +76,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#0A0A0A',
     },
     containerSolde: {
-        flex: 0.4,
+        flex: 0.2,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#2B6747',
         marginBottom: 15
     },
-    boxTransac: {
-        flex: 2.20,
-        marginHorizontal: 15,
+    boxPie: {
+        flex: 2.00,
+        alignItems: 'center',
+        justifyContent:'center'
     },
     txtTitleCol: {
         fontWeight: 'bold',

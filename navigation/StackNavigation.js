@@ -10,9 +10,9 @@ const Stack = createStackNavigator()
 const StackNavigation = () => {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="Accueil" options={{ headerTitleAlign: 'center', headerShown: false }} component={HomeScreen} />
-            <Stack.Screen name="Revenus" options={{ headerTitleAlign: 'center' }} component={AjoutRevenus} />
-            <Stack.Screen name="Depenses" options={{ headerTitleAlign: 'center' }} component={AjoutDepenses} />
+            <Stack.Screen name="Home" options={{ headerTitleAlign: 'center', headerShown: false }} component={HomeScreen} />
+            <Stack.Screen name="Revenus" options={{ headerTitleAlign: 'center', headerStyle: {backgroundColor:'#2B6747'}, headerTitleStyle: {color:'white'}, headerTintColor:'white' }} component={AjoutRevenus} />
+            <Stack.Screen name="Depenses" options={{ headerTitleAlign: 'center', headerStyle: {backgroundColor:'#2B6747'}, headerTitleStyle: {color:'white'}, headerTintColor:'white' }} component={AjoutDepenses} />
         </Stack.Navigator>
 
     )
