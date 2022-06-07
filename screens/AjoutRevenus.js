@@ -18,10 +18,8 @@ const ajoutRevenusSchema = yup.object().shape({
     .string()
     .required('Veuillez saisir un Montant')
     .matches(/^[1-9]+[0-9]*$/, 'Le montant doit être positif'),
-  categorie: yup
-    .string()
-    .required('Veuillez choisir une Catégorie')
 })
+
 
 
 const AjoutRevenus = () => {
@@ -128,9 +126,6 @@ const AjoutRevenus = () => {
 
                   </Picker>
                 </View>
-                {errors.categorie &&
-                  <Text style={{ fontSize: 15, color: 'red' }}>{errors.categorie}</Text>
-                }
 
                 <TextInput
                   label="Commentaire"

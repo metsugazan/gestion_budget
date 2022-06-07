@@ -38,40 +38,45 @@ const AccountScreen = () => {
     const [user, setUser] = useState(contextValue.user);
     const [userData, setUserData] = useState(data[contextValue.index])
     console.log(user)
+
+
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
-                    <View style={styles.dropDownStyle}>
-                        <Picker
-                            selectedValue={user}
-                            onValueChange={(text, index) => {
-                                contextValue.user = text
-                                contextValue.index = index - 1
-                                setUser(text)
-                                setUserData(data[index - 1])
-                            }}
-                            mode="dropdown"
-                        >
-                            <Picker.Item label="Choisissez un utilisateur" value=" " />
-                            {data.map((item, index) => <Picker.Item key={index} label={item.user} value={item.user} />)}
-                        </Picker>
-                    </View>
-                    {(user === "") && setUser == "Maynklin"}
-                    <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
-                        {userData.expenses.slice(0, 1).map((item, index) =><Text style={styles.txtSolde} key={index}>Solde : {item.amount} € <Entypo name="wallet" size={24} /></Text>)}
-                    </View>    
+                <View style={styles.dropDownStyle}>
+                    <Picker
+                        selectedValue={user}
+                        onValueChange={(text, index) => {
+                            contextValue.user = text
+                            contextValue.index = index - 1
+                            setUser(text)
+                            setUserData(data[index - 1])
+                        }}
+                        mode="dropdown"
+                    >
+                        <Picker.Item label="Choisissez un utilisateur" value=" " />
+                        {data.map((item, index) => <Picker.Item key={index} label={item.user} value={item.user} />)}
+                    </Picker>
+                </View>
+                {(user === "") && setUser == "Maynklin"}
+                <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
+                    {userData.expenses.slice(0, 1).map((item, index) => <Text style={styles.txtSolde} key={index}>Solde : {item.amount} € <Entypo name="wallet" size={24} /></Text>)}
+                </View>
             </View>
             <Text style={styles.txtSolde}>Transactions de {user}</Text>
 
             <Searchbar
-                    placeholder="Rechercher"
-                    onChangeText={(text) => searchFilterFunction(text)}
-                    style={{ flexDirection: 'row-reverse', borderRadius: 20, backgroundColor: '#FEFFE2', marginBottom: 10 }}
-                    value={search}
-                />
+                placeholder="Rechercher"
+                onChangeText={(text) => searchFilterFunction(text)}
+                style={{ flexDirection: 'row-reverse', borderRadius: 20, backgroundColor: '#FEFFE2', marginBottom: 10 }}
+                value={search}
+            />
 
             <View style={styles.boxTransac}>
+                <Text style={styles.txtTitleCol}>Débit</Text>
+
                 <ScrollView>
+
                     {userData.expenses.map((item, index) =>
                         <View style={styles.line} key={index}>
                             <View style={styles.lineLeft}>
@@ -85,7 +90,11 @@ const AccountScreen = () => {
                             </View>
                         </View>
                     )}
-                                        {userData.incomes.map((item, index) =>
+                </ScrollView>
+                <Text style={styles.txtTitleCol}>Crédit</Text>
+                <ScrollView>
+
+                    {userData.incomes.map((item, index) =>
                         <View style={styles.line} key={index}>
                             <View style={styles.lineLeft}>
                                 <Text style={styles.titleLine} >{item.user}</Text>
