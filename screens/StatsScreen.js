@@ -1,15 +1,21 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
-
+import { VictoryPie, VictoryChart, VictoryTheme } from 'victory-native';
 
 const StatsScreen = () => {
+
+    const data = [
+        { x: "Transports", y: 35 },
+        { x: "Logement", y: 40 },
+        { x: "Divertissement", y: 55 }
+      ];
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
-                <Text style={styles.txtSolde}>Ceci est un graphique !</Text>
-            </View>
-        </View>
+      </View>
+      <VictoryPie width={350} theme={VictoryTheme.material} data={data}/>
+      </View>
     )
 
 }
@@ -21,7 +27,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#0A0A0A'
+        backgroundColor: '#0A0A0A',
     },
     containerSolde: {
         flex: 0.4,
@@ -48,15 +54,15 @@ const styles = StyleSheet.create({
     },
     lineLeft: {
         flex: 2,
-        borderBottomWidth: 1,
+        borderBottomWidth: 1, 
         borderBottomColor: '#adabab',
         paddingBottom: 10
     },
     lineRight: {
         flex: 1,
-        borderBottomWidth: 1,
-        borderBottomColor: '#adabab',
-        alignItems: 'flex-end',
+        borderBottomWidth: 1, 
+        borderBottomColor: '#adabab', 
+        alignItems: 'flex-end', 
         justifyContent: 'center',
         paddingBottom: 10
     },

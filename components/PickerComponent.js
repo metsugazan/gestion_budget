@@ -3,22 +3,37 @@ import React, { useContext, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
+import GlobalContext from './GlobalContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 const PickerComponent = (props) => {
     const { data } = props
-
+    const contextValue = useContext(GlobalContext)
+    const [user, setUser] = useState(contextValue.user);
+    const [userData, setUserData] = useState(data[contextValue.index])
+  
+  
+    useFocusEffect(() => {
+      setUser(contextValue.user)
+      setUserData(data[contextValue.index])
+    })
+  
     return (
         <View style={styles.dropDownStyle}>
-            <Picker
-                /*onValueChange={(itemValue, itemIndex) =>
-                    setSelectedLanguage(itemValue)
-                }*/
-                mode="dropdown"
-            >
-                <Picker.Item label="Choisissez un utilisateur" value="" />
-                {data.map((item, index) => <Picker.Item label={item.user} value={item.user} />)}
-            </Picker>
-        </View>
+        <Picker
+        selectedValue={user}
+        onValueChange={(text, index) => {
+          contextValue.user = text
+          contextValue.index = index - 1
+          setUser(text)
+          setUserData(data[index - 1])
+        }}
+            mode="dropdown"
+        >
+            <Picker.Item label="Choisissez un utilisateur" value=" " />
+            {data.map((item, index) => <Picker.Item  key={index} label={item.user} value={item.user} />)}
+        </Picker>
+    </View>
     )
 
 }
@@ -45,4 +60,5 @@ const styles = StyleSheet.create({
         shadowRadius: 6.84,
         elevation: 5
     },
+    
 });

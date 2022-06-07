@@ -1,86 +1,81 @@
-import React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+import React, { useContext, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PickerComponent from '../components/PickerComponent';
+import GlobalContext from '../components/GlobalContext';
+import { useFocusEffect } from '@react-navigation/native'
 
 import data from '../assets/src/data.json'
 
 const HomeScreen = ({ navigation }) => {
+
+    const contextValue = useContext(GlobalContext)
+    const [user, setUser] = useState(contextValue.user);
+    const [userData, setUserData] = useState(data[contextValue.index])
+
+
+    useFocusEffect(() => {
+        setUser(contextValue.user)
+        setUserData(data[contextValue.index])
+    })
+
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
-            <PickerComponent data={data} />
-                <Text style={styles.txtSolde}>Romain RICORD</Text>
+                <View style={styles.dropDownStyle}>
+                    <Picker
+                        selectedValue={user}
+                        onValueChange={(text, index) => {
+                            contextValue.user = text
+                            contextValue.index = index - 1
+                            setUser(text)
+                            setUserData(data[index - 1])
+                        }}
+                        mode="dropdown"
+                    >
+                        <Picker.Item label="Choisissez un utilisateur" value=" " />
+                        {data.map((item, index) => <Picker.Item key={index} label={item.user} value={item.user} />)}
+                    </Picker>
+                </View>
+                {(user === "") && setUser == "Maynklin"}
+                <Text style={styles.txtSolde} value={user}>{user}</Text>
                 <Text style={styles.txtSolde}>Solde : Pauvre</Text>
-                
+
             </View>
             <Text style={styles.txtSolde}>Dernières transactions</Text>
 
             <View style={styles.boxTransac}>
                 <Text style={styles.txtTitleCol}>Débit</Text>
-                <View style={styles.line}>
-                    <View style={styles.lineLeft}>
-                        <Text style={styles.titleLine} >Casque VR</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >Loisir</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >02-06-2022, 13:14 </Text>
+                <ScrollView>
+                {userData.expenses.map((item, index) =>
+                    <View style={styles.line} key={index}>
+                        <View style={styles.lineLeft}>
+                            <Text style={styles.titleLine} >{item.category}</Text>
+                            <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{item.date}</Text>
+                        </View>
+                        <View style={styles.lineRight}>
+                            <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >- {item.amount} €</Text>
+                        </View>
                     </View>
-                    <View style={styles.lineRight}>
-                        <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >- 350 €</Text>
-                    </View>
-                </View>
-                <View style={styles.line}>
-                    <View style={styles.lineLeft}>
-                        <Text style={styles.titleLine} >Sangle</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >Loisir</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >02-06-2022, 13:14 </Text>
-                    </View>
-                    <View style={styles.lineRight}>
-                        <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >- 50 €</Text>
-                    </View>
-                </View>
-                <View style={styles.line}>
-                    <View style={styles.lineLeft}>
-                        <Text style={styles.titleLine} >Abonnement SNCF</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >Transport</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >02-06-2022, 08:14 </Text>
-                    </View>
-                    <View style={styles.lineRight}>
-                        <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >- 75 €</Text>
-                    </View>
-                </View>
+                )}
+</ScrollView>
                 <Text style={styles.txtTitleCol}>Crédit</Text>
-                <View style={styles.line}>
-                    <View style={styles.lineLeft}>
-                        <Text style={styles.titleLine} >Pôle emploi</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >Indemnité</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >02-06-2022, 07:00 </Text>
+                <ScrollView>
+                {userData.incomes.map((item, index) =>
+                    <View style={styles.line}>
+                        <View style={styles.lineLeft}>
+                            <Text style={styles.titleLine} >{item.category}</Text>
+                            <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{item.date}</Text>
+                        </View>
+                        <View style={styles.lineRight}>
+                            <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >{item.amount} €</Text>
+                        </View>
                     </View>
-                    <View style={styles.lineRight}>
-                        <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >1000 €</Text>
-                    </View>
-                </View>
-                <View style={styles.line}>
-                    <View style={styles.lineLeft}>
-                        <Text style={styles.titleLine} >Gary's mod</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >Revenus</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >01-06-2022, 21:30 </Text>
-                    </View>
-                    <View style={styles.lineRight}>
-                        <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >10 €</Text>
-                    </View>
-                </View>
-                <View style={styles.line}>
-                    <View style={styles.lineLeft}>
-                        <Text style={styles.titleLine} >Gary's mod</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >Revenus</Text>
-                        <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >31-05-2022, 22:14 </Text>
-                    </View>
-                    <View style={styles.lineRight}>
-                        <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >20 €</Text>
-                    </View>
-                </View>
+                )}
+                </ScrollView>
             </View>
 
 
@@ -137,16 +132,16 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     lineLeft: {
-        flex: 1,
-        borderBottomWidth: 1, 
+        flex: 2,
+        borderBottomWidth: 1,
         borderBottomColor: '#adabab',
         paddingBottom: 10
     },
     lineRight: {
         flex: 1,
-        borderBottomWidth: 1, 
-        borderBottomColor: '#adabab', 
-        alignItems: 'flex-end', 
+        borderBottomWidth: 1,
+        borderBottomColor: '#adabab',
+        alignItems: 'flex-end',
         justifyContent: 'center',
         paddingBottom: 10
     },
@@ -171,5 +166,23 @@ const styles = StyleSheet.create({
     },
     btn: {
         alignItems: 'center'
+    },
+    dropDownStyle: {
+        width: '80%',
+        borderColor: '#838383',
+        paddingHorizontal: 5,
+        backgroundColor: '#adabab',
+        borderRadius: 10,
+        color: '#838383',
+        height: 45,
+        textAlign: 'center',
+        shadowColor: 'black',
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 6.84,
+        elevation: 5
     },
 });
