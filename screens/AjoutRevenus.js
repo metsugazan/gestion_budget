@@ -3,75 +3,67 @@ import { Formik } from 'formik'
 import { TextInput } from 'react-native-paper'
 import { Picker } from '@react-native-picker/picker'
 import React, { useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import dayjs from 'dayjs'
 import * as yup from 'yup'
-
-const ajoutRevenusSchema = yup.object().shape({
-  nom: yup
-    .string()
-    .required('Veuillez saisir un Nom'),
-  prenom: yup
-    .string()
-    .required('Veuillez saisir un Prénom'),
-  montant: yup
-    .string()
-    .required('Veuillez saisir un Montant')
-    .matches(/^[1-9]+[0-9]*$/, 'Le montant doit être positif'),
-})
-
-
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
 
 const AjoutRevenus = () => {
   const [date, setDate] = useState(new Date())
   const [dateTimeShow, setDateTimeShow] = useState(false)
   const [categorie, setCategorie] = useState('')
+  const [disabled, setDisabled] = useState(true)
   const fdate = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
+  const navigation = useNavigation()
+  const categorieArray = ['']
+
+  const checkCategorie = (value) => {
+    if (!value) {
+      setDisabled(true)
+    } else {
+      if (!categorieArray.includes(value)) {
+        setDisabled(false)
+    }
+  }
+    setCategorie(value)
+  }
+
+
   return (
     <Formik
-      validationSchema={ajoutRevenusSchema}
-      initialValues={{ nom: '', prénom: '', montant: '', commentaire: '' }}
-      onSubmit={values => console.log(values, categorie, fdate)}
+     
+      initialValues={{ nom: '', prénom: '', montant: '', commentaire: ''}}
+      onSubmit={values => navigation.navigate('Home',{values,date2: fdate,categorie: categorie})}
+    
     >
-      {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
-        <ScrollView>
+      {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View style={styles.container}>
             <View style={styles.boxForm}>
               <View style={{ flex: 1 }}>
                 <TextInput
                   label="Nom"
                   style={styles.txtInput}
-                  theme={{
-                    roundness: 10,
-                  }}
                   placeholder='Entrer le nom du bénéficiaire'
                   onChangeText={handleChange('nom')}
                   onBlur={handleBlur('nom')}
+                  returnKeyType="next"
                   value={values.nom}
                 />
-                {errors.nom &&
-                  <Text style={{ fontSize: 15, color: 'red' }}>{errors.nom}</Text>
-                }
+                
                 <TextInput
                   label="Prénom"
                   style={styles.txtInput}
-                  theme={{
-                    roundness: 10,
-                  }}
-                  placeholder='Entrer le prénom du bénéficiaire'
+                  placeholder='Entrer le prénom dubénéficiaire'
                   onChangeText={handleChange('prénom')}
                   onBlur={handleBlur('prénom')}
+                  returnKeyType="next"
                   value={values.prénom}
                 />
-                {errors.prenom &&
-                  <Text style={{ fontSize: 15, color: 'red' }}>{errors.prenom}</Text>
-                }
+                
                 <TextInput
                   label="Date de déclaration"
                   style={styles.txtInput}
-                  theme={{
-                    roundness: 10,
-                  }}
                   value={dayjs(date).format('DD-MM-YYYY')}
                   onChangeText={() => { }}
                   onBlur={() => { }}
@@ -93,31 +85,29 @@ const AjoutRevenus = () => {
                 <TextInput
                   label="Montant"
                   style={styles.txtInput}
-                  theme={{
-                    roundness: 10,
-                  }}
                   placeholder='Entrer le montant'
                   onChangeText={handleChange('montant')}
                   onBlur={handleBlur('montant')}
+                  returnKeyType="next"
                   value={values.montant}
                   keyboardType='numeric'
                 />
-                {errors.montant &&
-                  <Text style={{ fontSize: 15, color: 'red' }}>{errors.montant}</Text>
-                }
+               
                 <View style={styles.dropDownStyle}>
                   <Picker
                     selectedValue={categorie}
+                    style={{color: '#fff', placeholderTextColor: '#fff'}}
+                    backgroundColor='#2B6747'
                     onValueChange={(itemValue, itemIndex) => {
-                      setCategorie(itemValue)
+                      checkCategorie(itemValue)
 
                     }}
                   >
                     <Picker.Item label="Catégorie" value="" />
                     <Picker.Item label="Salaire et assimilé" value="Salaire et assimilé" />
                     <Picker.Item label="Revenu financier" value="Revenu financier" />
-                    <Picker.Item label="Rente" value=" Rente" />
-                    <Picker.Item label="Pension alimentaire" value=" Pension alimentaire" />
+                    <Picker.Item label="Rente" value="Rente" />
+                    <Picker.Item label="Pension alimentaire" value="Pension alimentaire" />
                     <Picker.Item label="Allocation chômage" value="Allocation chômage" />
                     <Picker.Item label="Prestations sociales" value="Prestations sociales" />
                     <Picker.Item label="Revenu foncier" value="Revenu foncier" />
@@ -126,37 +116,30 @@ const AjoutRevenus = () => {
 
                   </Picker>
                 </View>
+                
+
 
                 <TextInput
                   label="Commentaire"
                   multiline={true}
                   numberOfLines={4}
                   style={styles.txtComment}
-                  theme={{
-                    roundness: 10,
-                  }}
                   placeholder='Entrer un commentaire'
                   onChangeText={handleChange('commentaire')}
                   onBlur={handleBlur('commentaire')}
+                  returnKeyType= 'done'
                   value={values.commentaire}
                 />
 
 
-                <TouchableOpacity style={{ backgroundColor: '#9F8236', alignItems: 'center', marginVertical: 10, justifyContent: 'center', height: 50, borderRadius: 30 }} onPress={handleSubmit} title="Submit">
+                <TouchableOpacity style={{ backgroundColor: '#9F8236', alignItems: 'center', marginVertical: 10, justifyContent: 'center', height: 50, borderRadius: 30 }} disabled={disabled} onPress={handleSubmit} title="Submit">
                   <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>Ajouter</Text>
                 </TouchableOpacity>
+                
               </View>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ color: 'white' }}> nom:{values.nom} </Text>
-              <Text style={{ color: 'white' }}> prenom:{values.prénom}</Text>
-              <Text style={{ color: 'white' }}> montant:{values.montant}</Text>
-              <Text style={{ color: 'white' }}> commentaire:{values.commentaire}</Text>
-              <Text style={{ color: 'white' }}> categorie:{categorie}</Text>
-              <Text style={{ color: 'white' }}> date:{date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()}</Text>
-            </View>
+           
           </View>
-        </ScrollView>
       )}
     </Formik>
   )
@@ -172,6 +155,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A0A0A',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 30
   },
   boxForm: {
     flex: 2,
@@ -190,7 +174,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: '#2B6747',
     borderRadius: 10,
-    color: '#FFF',
+    color: '#838383',
     shadowColor: 'black',
     shadowOffset: {
       width: 0,
@@ -224,7 +208,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderWidth: 1,
     backgroundColor: '#2B6747',
-    borderRadius: 10,
+    borderRadius: 8,
     color: '#FFF',
     height: 35,
     textAlign: 'center',

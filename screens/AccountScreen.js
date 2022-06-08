@@ -34,7 +34,6 @@ const AccountScreen = () => {
             setSearch(text);
         }
     }
-
     const [id, setId] = React.useState(data[0]._id)
     const [user, setUser] = React.useState(data[0].user)
     const [incomes, setIncomes] = React.useState(data[0].incomes)
@@ -161,13 +160,13 @@ const styles = StyleSheet.create({
         flex: 0.17,
     },
     lineLeft: {
-        flex: 2,
+        flex: 1.85,
         borderBottomWidth: 1,
         borderBottomColor: '#adabab',
         paddingBottom: 5
     },
     lineRight: {
-        flex: 1,
+        flex: 1.20,
         borderBottomWidth: 1,
         borderBottomColor: '#adabab',
         alignItems: 'flex-end',

@@ -7,10 +7,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import data from '../assets/src/data.json'
+import GlobalContext from '../components/GlobalContext';
 
 const selectId = (id) => {
     return data.find(item => item._id === id)
 }
+
 
 const HomeScreen = ({ navigation }) => {
 
@@ -23,6 +25,10 @@ const HomeScreen = ({ navigation }) => {
     const [category, setCategory] = React.useState(data[0].category)
     const [comments, setComments] = React.useState(data[0].comments)
     const [_id_income, set_id_income] = React.useState(data[0]._id_income)
+
+    const contextValue = useContext(GlobalContext)
+    //const [user, setUser] = useState(contextValue.user);
+    const [userData, setUserData] = useState(data[contextValue.index])
 
 
 
@@ -50,15 +56,15 @@ const HomeScreen = ({ navigation }) => {
                             {data.map(item => <Picker.Item label={item.user} value={item._id} key={item._id} />)}
                         </Picker>
                     </View>
-                    {(user === "") && setUser == "Maynklin"}
+
                     <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
                         <Text style={styles.txtSolde}>{user}</Text>
                         <Text style={styles.txtSolde}>Solde : {totalBalance} € <Entypo name="wallet" size={24} /></Text>
                     </View>
                 </View>
             </View>
-            <Text style={styles.txtSolde}>Dernières transactions</Text>
-
+            
+            <Text style={styles.txtSolde}>Dernières transactions</Text>       
             <View style={styles.boxTransac}>
                 <Text style={styles.txtTitleCol}>Débit</Text>
                 <ScrollView>
@@ -93,16 +99,16 @@ const HomeScreen = ({ navigation }) => {
 
 
 
-            <View style={{ flex: 0.45, flexDirection: 'row' }}>
+            <View style={{ flex: 0.75, flexDirection: 'row' }}>
                 <View style={styles.containerBtn}>
                     <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Revenus')}>
-                        <MaterialCommunityIcons name="plus-circle" style={{ color: '#9F8236' }} size={46} />
+                        <MaterialCommunityIcons name="plus-circle" style={{ color: '#9F8236' }} size={52} />
                         <Text style={{ color: '#adabab', fontWeight: 'bold' }}>Ajout revenus</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.containerBtn}>
                     <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Depenses')}>
-                        <MaterialCommunityIcons name="plus-circle" style={{ color: '#9F8236' }} size={46} />
+                        <MaterialCommunityIcons name="plus-circle" style={{ color: '#9F8236' }} size={52} />
                         <Text style={{ color: '#adabab', fontWeight: 'bold' }}>Ajout dépenses</Text>
                     </TouchableOpacity>
                 </View>
@@ -128,7 +134,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     boxTransac: {
-        flex: 3,
+        flex: 2.5,
         marginHorizontal: 15
     },
     txtTitleCol: {
@@ -144,13 +150,13 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     lineLeft: {
-        flex: 2,
+        flex: 1.85,
         borderBottomWidth: 1,
         borderBottomColor: '#adabab',
         paddingBottom: 10
     },
     lineRight: {
-        flex: 1,
+        flex: 1.20,
         borderBottomWidth: 1,
         borderBottomColor: '#adabab',
         alignItems: 'flex-end',

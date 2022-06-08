@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
-import { VictoryPie, VictoryTheme } from 'victory-native';
+import { VictoryPie } from 'victory-native';
 import data from '../assets/src/data.json'
 import { Picker } from '@react-native-picker/picker';
 
@@ -25,13 +25,6 @@ const StatsScreen = () => {
     const [category, setCategory] = React.useState(data[0].category)
     const [comments, setComments] = React.useState(data[0].comments)
     const [_id_income, set_id_income] = React.useState(data[0]._id_income)
-
-
-
-    const totalIncome = incomes.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
-    const totalExpenses = expenses.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
-    const totalBalance = (parseFloat(totalIncome) - parseFloat(totalExpenses)).toFixed(2)
-
 
 
     return (
@@ -61,14 +54,29 @@ const StatsScreen = () => {
             <View style={styles.boxPie}>
                 <ScrollView>
                     <Text style={styles.txtSolde}>Dépenses</Text>
-                    <VictoryPie width={300}
-                        colorScale={["tomato", "orange", "#adabab", "cyan", "navy", "#2B6747", "gold", "#222222", "#d62828", "#bb3e03"]}
-                        style={{ labels: { fontSize: 12, fontWeight: 'bold', fill: 'white' } }} x={(data) => data.category + ' : ' + data.amount} y={(data) => data.amount} data={expenses} />
+                    <VictoryPie  
+                        colorScale={["#d62828", "orange", "#2B6747", "#bb3e03", "navy", "#2B6747", "gold", "#222222", "#d62828", "#bb3e03"]}
+                        labelPosition={({ index }) => index
+                          ? "centroid"
+                          : "startAngle"
+                        }
+
+                        startAngle={65}
+                        endAngle={450}
+                      labelRadius={({ innerRadius }) => innerRadius + 55 }
+                        style={{ labels: { fontSize: 15, fontWeight: 'bold', fill: 'white' } }} x={(data) =>  data.category + '\n' + data.amount} y={(data) => data.amount} data={expenses} />
 
                     <Text style={styles.txtSolde}>Revenus</Text>
-                    <VictoryPie width={300}
-                        colorScale={["tomato", "orange", "#adabab", "cyan", "navy", "#2B6747", "gold", "#222222", "#d62828", "#bb3e03"]}
-                        style={{ labels: { fontSize: 12, fontWeight: 'bold', fill: 'white' } }} x={(data) => data.category + ' : ' + data.amount} y={(data) => data.amount} data={incomes} />
+                    <VictoryPie
+                        colorScale={["#d62828", "orange", "#2B6747", "#bb3e03", "navy", "#2B6747", "gold", "#222222", "#d62828", "#bb3e03"]}
+                        labelPosition={({ index }) => index
+                        ? "centroid"
+                        : "startAngle"
+                      }
+                      startAngle={55}
+                      endAngle={450}
+                    labelRadius={({ innerRadius }) => innerRadius + 55 }
+                        style={{ labels: {fontSize: 15, fontWeight: 'bold', fill: 'white' } }} x={(data) => data.category + '\n' + data.amount} y={(data) => data.amount} data={incomes} />
                 </ScrollView>
             </View>
 
@@ -97,34 +105,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    txtTitleCol: {
-        fontWeight: 'bold',
-        fontSize: 18,
-        color: "#EEF1F1",
-        textAlign: 'center',
-        marginVertical: 5
-    },
-    titleLine: {
-        color: '#EEF1F1',
-        textAlign: 'left',
-        marginHorizontal: 10,
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
     txtSolde: {
         fontWeight: 'bold',
         fontSize: 22,
         textAlign: 'center',
         color: 'white'
-    },
-    containerBtn: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginVertical: 5
-    },
-    btn: {
-        alignItems: 'center'
     },
     dropDownStyle: {
         marginTop: 5,
