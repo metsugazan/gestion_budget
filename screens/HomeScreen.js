@@ -5,29 +5,31 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { Picker } from '@react-native-picker/picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import PickerComponent from '../components/PickerComponent';
-import GlobalContext from '../components/GlobalContext';
 
 import data from '../assets/src/data.json'
 
+const selectId = (id) => {
+    return data.find(item => item._id === id)
+}
+
 const HomeScreen = ({ navigation }) => {
 
-    const contextValue = useContext(GlobalContext)
-    const [user, setUser] = useState(contextValue.user);
-    const [userData, setUserData] = useState(data[contextValue.index])
-    useEffect(() => {
-        setUser(contextValue.user)
-        setUserData(data[contextValue.index])
-    })
-    /*for(var i = 0; i < userData.expenses.length; i++){
-        var obj = userData.expenses[i];
-        for(var prop in obj){
-            if(obj.hasOwnProperty(prop) && obj[prop] !== null && !isNaN(obj[prop])){
-                obj[prop] = +obj[prop];   
-            }
-        }
-    }
-    console.log(JSON.stringify(userData.expenses, null, 2));*/
+    const [id, setId] = React.useState(data[0]._id)
+    const [user, setUser] = React.useState(data[0].user)
+    const [incomes, setIncomes] = React.useState(data[0].incomes)
+    const [expenses, setExpenses] = React.useState(data[0].expenses)
+    const [date, setDate] = React.useState(data[0].date)
+    const [amount, setAmount] = React.useState(data[0].amount)
+    const [category, setCategory] = React.useState(data[0].category)
+    const [comments, setComments] = React.useState(data[0].comments)
+    const [_id_income, set_id_income] = React.useState(data[0]._id_income)
+
+
+
+    const totalIncome = incomes.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
+    const totalExpenses = expenses.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
+    const totalBalance = (parseFloat(totalIncome) - parseFloat(totalExpenses)).toFixed(2)
+
 
     return (
         <View style={styles.container}>
@@ -35,23 +37,23 @@ const HomeScreen = ({ navigation }) => {
                 <View style={{ flexDirection: 'row' }}>
                     <View style={styles.dropDownStyle}>
                         <Picker
-                            selectedValue={user}
-                            onValueChange={(text, index) => {
-                                contextValue.user = text
-                                contextValue.index = index - 1
-                                setUser(text)
-                                setUserData(data[index - 1])
-                            }}
-                            mode="dropdown"
-                        >
-                            <Picker.Item label="Choisissez un utilisateur" value=" " />
-                            {data.map((item, index) => <Picker.Item key={index} label={item.user} value={item.user} />)}
+                            selectedValue={id}
+                            onValueChange={(itemValue, itemIndex) => {
+                                setId(itemValue)
+                                setUser(selectId(itemValue).user)
+                                setIncomes(selectId(itemValue).incomes)
+                                setExpenses(selectId(itemValue).expenses)
+                                setDate(selectId(itemValue).date)
+                                setAmount(selectId(itemValue).amount)
+                                setCategory(selectId(itemValue).category)
+                            }}>
+                            {data.map(item => <Picker.Item label={item.user} value={item._id} key={item._id} />)}
                         </Picker>
                     </View>
                     {(user === "") && setUser == "Maynklin"}
                     <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
                         <Text style={styles.txtSolde}>{user}</Text>
-                        {userData.expenses.slice(0, 1).map((item, index) =><Text style={styles.txtSolde} key={index}>Solde : {item.amount} € <Entypo name="wallet" size={24} /></Text>)}
+                        <Text style={styles.txtSolde}>Solde : {totalBalance} € <Entypo name="wallet" size={24} /></Text>
                     </View>
                 </View>
             </View>
@@ -60,7 +62,7 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.boxTransac}>
                 <Text style={styles.txtTitleCol}>Débit</Text>
                 <ScrollView>
-                    {userData.expenses.slice(0, 3).map((item, index) =>
+                    {expenses.slice(0, 3).map((item, index) =>
                         <View style={styles.line} key={index}>
                             <View style={styles.lineLeft}>
                                 <Text style={styles.titleLine} >{item.category}</Text>
@@ -74,8 +76,8 @@ const HomeScreen = ({ navigation }) => {
                 </ScrollView>
                 <Text style={styles.txtTitleCol}>Crédit</Text>
                 <ScrollView>
-                    {userData.incomes.slice(0, 3).map((item, index) =>
-                        <View style={styles.line}>
+                    {incomes.slice(0, 3).map((item, index) =>
+                        <View style={styles.line} key={index}>
                             <View style={styles.lineLeft}>
                                 <Text style={styles.titleLine} >{item.category}</Text>
                                 <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{item.date}</Text>
@@ -119,11 +121,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#0A0A0A'
     },
     containerSolde: {
-        flex: 0.65,
+        flex: 0.75,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#2B6747',
-        marginBottom: 15,
+        marginBottom: 8,
     },
     boxTransac: {
         flex: 3,

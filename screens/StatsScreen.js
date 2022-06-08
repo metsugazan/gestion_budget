@@ -2,66 +2,77 @@ import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { VictoryPie, VictoryTheme } from 'victory-native';
-import GlobalContext from '../components/GlobalContext';
 import data from '../assets/src/data.json'
+import { Picker } from '@react-native-picker/picker';
+
+const selectId = (id) => {
+    return data.find(item => item._id === id)
+}
 
 const StatsScreen = () => {
-const result = (data) => data.user
-console.log(result)
-const contextValue = useContext(GlobalContext)
-const [user, setUser] = useState(contextValue.user);
-const [userData, setUserData] = useState(data[contextValue.index])
+    /*const result = (data) => data.user
+    console.log(result)
+    const contextValue = useContext(GlobalContext)
+    const [user, setUser] = useState(contextValue.user);
+    const [userData, setUserData] = useState(data[contextValue.index])*/
+
+    const [id, setId] = React.useState(data[0]._id)
+    const [user, setUser] = React.useState(data[0].user)
+    const [incomes, setIncomes] = React.useState(data[0].incomes)
+    const [expenses, setExpenses] = React.useState(data[0].expenses)
+    const [date, setDate] = React.useState(data[0].date)
+    const [amount, setAmount] = React.useState(data[0].amount)
+    const [category, setCategory] = React.useState(data[0].category)
+    const [comments, setComments] = React.useState(data[0].comments)
+    const [_id_income, set_id_income] = React.useState(data[0]._id_income)
+
+
+
+    const totalIncome = incomes.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
+    const totalExpenses = expenses.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
+    const totalBalance = (parseFloat(totalIncome) - parseFloat(totalExpenses)).toFixed(2)
+
+
 
     return (
         <View style={styles.container}>
+
             <View style={styles.containerSolde}>
-            <Text style={styles.txtSolde}>Statistiques</Text>
-      </View>
-      <Text style={styles.txtSolde}>Dépenses par utilisateur</Text>
-      <View style={styles.boxPie}>
-      <VictoryPie width={400}
-       colorScale={["tomato", "orange", "#adabab", "cyan", "navy","#2B6747", "gold", "#222222", "#d62828", "#bb3e03"]}
-       style={{labels: {fontSize: 16, fontWeight: 'bold', fill:'white'}}} x={result} y={(data) => data.user} data={data}/>
-      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginHorizontal: 25, marginVertical: 10 }}>
-                    <View style={{ flex: 1, backgroundColor:'tomato', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', textAlign:'center'}}>Mayer Franklin</Text>
-                    </View>
-                    <View style={{ flex: 1, backgroundColor:'orange', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Ross Hess</Text>
-                    </View>
-                    <View style={{ flex: 1, backgroundColor:'#adabab', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Ingram Witt</Text>
-                    </View>
+                <Text style={styles.txtSolde}>Statistiques de :</Text>
+                <View style={styles.dropDownStyle}>
+                    <Picker
+                        selectedValue={id}
+                        onValueChange={(itemValue, itemIndex) => {
+                            setId(itemValue)
+                            setUser(selectId(itemValue).user)
+                            setIncomes(selectId(itemValue).incomes)
+                            setExpenses(selectId(itemValue).expenses)
+                            setDate(selectId(itemValue).date)
+                            setAmount(selectId(itemValue).amount)
+                            setCategory(selectId(itemValue).category)
+                            setComments(selectId(itemValue).comments)
+                            set_id_income(selectId(itemValue)._id_income)
+                        }}>
+                        {data.map(item => <Picker.Item label={item.user} value={item._id} key={item._id} />)}
+                    </Picker>
                 </View>
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginHorizontal: 25, marginVertical: 10 }}>
-                    <View style={{ flex: 1, backgroundColor:'cyan', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'black', fontSize:16, fontWeight:'bold',  height: 40, textAlign:'center'}}>Mccormick Harrison</Text>
-                    </View>
-                    <View style={{ flex: 1, backgroundColor:'navy', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Garcia Brown</Text>
-                    </View>
-                    <View style={{ flex: 1, backgroundColor:'#2B6747', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Ramsey Le</Text>
-                    </View>
-                </View>
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginHorizontal: 25, marginVertical: 10 }}>
-                    <View style={{ flex: 1, backgroundColor:'gold', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'black', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Witt Tyler</Text>
-                    </View>
-                    <View style={{ flex: 1, backgroundColor:'#222222', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Diana Leon</Text>
-                    </View>
-                    <View style={{ flex: 1, backgroundColor:'#d62828', borderRadius: 5, marginHorizontal: 5 }}>
-                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 42, textAlign:'center'}}>Millie Mcknight</Text>
-                    </View>
-                </View>
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginHorizontal: 25,width:'43%', marginVertical: 10 }}>
-                    <View style={{ flex: 1, backgroundColor:'#bb3e03', borderRadius: 5,width:'50%', marginHorizontal: 5 }}>
-                        <Text style={{color:'white', fontSize:16, fontWeight:'bold', height: 25, textAlign:'center'}}>Daugherty Middleton</Text>
-                    </View>
-                </View>
-      </View>
-      </View>
+            </View>
+
+            <View style={styles.boxPie}>
+                <ScrollView>
+                    <Text style={styles.txtSolde}>Dépenses</Text>
+                    <VictoryPie width={300}
+                        colorScale={["tomato", "orange", "#adabab", "cyan", "navy", "#2B6747", "gold", "#222222", "#d62828", "#bb3e03"]}
+                        style={{ labels: { fontSize: 12, fontWeight: 'bold', fill: 'white' } }} x={(data) => data.category + ' : ' + data.amount} y={(data) => data.amount} data={expenses} />
+
+                    <Text style={styles.txtSolde}>Revenus</Text>
+                    <VictoryPie width={300}
+                        colorScale={["tomato", "orange", "#adabab", "cyan", "navy", "#2B6747", "gold", "#222222", "#d62828", "#bb3e03"]}
+                        style={{ labels: { fontSize: 12, fontWeight: 'bold', fill: 'white' } }} x={(data) => data.category + ' : ' + data.amount} y={(data) => data.amount} data={incomes} />
+                </ScrollView>
+            </View>
+
+        </View>
     )
 
 }
@@ -70,22 +81,21 @@ export default StatsScreen;
 
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
-        backgroundColor: '#0A0A0A',
+        backgroundColor: '#0A0A0A'
     },
     containerSolde: {
-        flex: 0.2,
+        flex: 0.4,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#2B6747',
-        marginBottom: 15
+        marginBottom: 8,
     },
     boxPie: {
         flex: 2.00,
         alignItems: 'center',
-        justifyContent:'center'
+        justifyContent: 'center',
     },
     txtTitleCol: {
         fontWeight: 'bold',
@@ -93,25 +103,6 @@ const styles = StyleSheet.create({
         color: "#EEF1F1",
         textAlign: 'center',
         marginVertical: 5
-    },
-    line: {
-        flexDirection: 'row',
-        flex: 0.17,
-        marginBottom: 10
-    },
-    lineLeft: {
-        flex: 2,
-        borderBottomWidth: 1, 
-        borderBottomColor: '#adabab',
-        paddingBottom: 10
-    },
-    lineRight: {
-        flex: 1,
-        borderBottomWidth: 1, 
-        borderBottomColor: '#adabab', 
-        alignItems: 'flex-end', 
-        justifyContent: 'center',
-        paddingBottom: 10
     },
     titleLine: {
         color: '#EEF1F1',
@@ -134,5 +125,25 @@ const styles = StyleSheet.create({
     },
     btn: {
         alignItems: 'center'
+    },
+    dropDownStyle: {
+        marginTop: 5,
+        width: '50%',
+        borderColor: '#838383',
+        paddingHorizontal: 5,
+        backgroundColor: '#adabab',
+        borderRadius: 10,
+        color: '#838383',
+        height: 35,
+        textAlign: 'center',
+        justifyContent: 'center',
+        shadowColor: 'black',
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 6.84,
+        elevation: 5
     },
 });

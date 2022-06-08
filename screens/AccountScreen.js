@@ -1,14 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList } from 'react-native';
 
-import { Searchbar } from 'react-native-paper';
-import ListComponent from '../components/ListComponent';
-import GlobalContext from '../components/GlobalContext';
+import { Searchbar } from 'react-native-paper';;
 import { Picker } from '@react-native-picker/picker';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import data from '../assets/src/data.json'
 
+const selectId = (id) => {
+    return data.find(item => item._id === id)
+}
 
 const AccountScreen = () => {
     const [search, setSearch] = useState('');
@@ -19,8 +20,8 @@ const AccountScreen = () => {
         if (text) {
             const newData = masterDataSource.filter(
                 function (item) {
-                    const itemData = item.user
-                        ? item.user.toUpperCase()
+                    const itemData = category
+                        ? category.toUpperCase()
                         : ''.toUpperCase();
                     const textData = text.toUpperCase();
                     return itemData.indexOf(textData) > -1;
@@ -34,10 +35,22 @@ const AccountScreen = () => {
         }
     }
 
-    const contextValue = useContext(GlobalContext);
-    const [user, setUser] = useState(contextValue.user);
-    const [userData, setUserData] = useState(data[contextValue.index])
-    console.log(user)
+    const [id, setId] = React.useState(data[0]._id)
+    const [user, setUser] = React.useState(data[0].user)
+    const [incomes, setIncomes] = React.useState(data[0].incomes)
+    const [expenses, setExpenses] = React.useState(data[0].expenses)
+    const [date, setDate] = React.useState(data[0].date)
+    const [amount, setAmount] = React.useState(data[0].amount)
+    const [category, setCategory] = React.useState(data[0].category)
+    const [comments, setComments] = React.useState(data[0].comments)
+    const [_id_income, set_id_income] = React.useState(data[0]._id_income)
+
+
+
+    const totalIncome = incomes.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
+    const totalExpenses = expenses.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
+    const totalBalance = (parseFloat(totalIncome) - parseFloat(totalExpenses)).toFixed(2)
+
 
 
     return (
@@ -45,22 +58,24 @@ const AccountScreen = () => {
             <View style={styles.containerSolde}>
                 <View style={styles.dropDownStyle}>
                     <Picker
-                        selectedValue={user}
-                        onValueChange={(text, index) => {
-                            contextValue.user = text
-                            contextValue.index = index - 1
-                            setUser(text)
-                            setUserData(data[index - 1])
-                        }}
-                        mode="dropdown"
-                    >
-                        <Picker.Item label="Choisissez un utilisateur" value=" " />
-                        {data.map((item, index) => <Picker.Item key={index} label={item.user} value={item.user} />)}
+                        selectedValue={id}
+                        onValueChange={(itemValue, itemIndex) => {
+                            setId(itemValue)
+                            setUser(selectId(itemValue).user)
+                            setIncomes(selectId(itemValue).incomes)
+                            setExpenses(selectId(itemValue).expenses)
+                            setDate(selectId(itemValue).date)
+                            setAmount(selectId(itemValue).amount)
+                            setCategory(selectId(itemValue).category)
+                            setComments(selectId(itemValue).comments)
+                            set_id_income(selectId(itemValue)._id_income)
+                        }}>
+                        {data.map(item => <Picker.Item label={item.user} value={item._id} key={item._id} />)}
                     </Picker>
                 </View>
                 {(user === "") && setUser == "Maynklin"}
                 <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
-                    {userData.expenses.slice(0, 1).map((item, index) => <Text style={styles.txtSolde} key={index}>Solde : {item.amount} € <Entypo name="wallet" size={24} /></Text>)}
+                   <Text style={styles.txtSolde}>Solde : {totalBalance} € <Entypo name="wallet" size={24} /></Text>
                 </View>
             </View>
             <Text style={styles.txtSolde}>Transactions de {user}</Text>
@@ -73,11 +88,11 @@ const AccountScreen = () => {
             />
 
             <View style={styles.boxTransac}>
-                <Text style={styles.txtTitleCol}>Débit</Text>
+                <Text style={styles.txtTitleCol}>Débit - Total : - {totalExpenses} €</Text>
 
                 <ScrollView>
 
-                    {userData.expenses.map((item, index) =>
+                    {expenses.map((item, index) =>
                         <View style={styles.line} key={index}>
                             <View style={styles.lineLeft}>
                                 <Text style={styles.titleLine} >{item.user}</Text>
@@ -91,10 +106,10 @@ const AccountScreen = () => {
                         </View>
                     )}
                 </ScrollView>
-                <Text style={styles.txtTitleCol}>Crédit</Text>
+                <Text style={styles.txtTitleCol}>Crédit - Total : {totalIncome} €</Text>
                 <ScrollView>
 
-                    {userData.incomes.map((item, index) =>
+                    {incomes.map((item, index) =>
                         <View style={styles.line} key={index}>
                             <View style={styles.lineLeft}>
                                 <Text style={styles.titleLine} >{item.user}</Text>
@@ -124,11 +139,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#0A0A0A'
     },
     containerSolde: {
-        flex: 0.3,
+        flex: 0.5,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#2B6747',
-        marginBottom: 15,
+        marginBottom: 8,
     },
     boxTransac: {
         flex: 2.20,
@@ -183,8 +198,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     dropDownStyle: {
+        marginTop: 30,
         width: '50%',
-        flex: 0.85,
         borderColor: '#838383',
         paddingHorizontal: 5,
         backgroundColor: '#adabab',
